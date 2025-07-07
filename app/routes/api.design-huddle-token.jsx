@@ -1,20 +1,8 @@
 import { json } from "@remix-run/node";
 
-const ALLOWED_ORIGIN = "https://w1budy-qz.myshopify.com"; // your Shopify store URL
+const ALLOWED_ORIGIN = "https://w1budy-qz.myshopify.com";
 
 export const loader = async ({ request }) => {
-  if (request.method === "OPTIONS") {
-    // Handle preflight request
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
-    });
-  }
-
   const url = new URL(request.url);
   const username = url.searchParams.get("user_id_or_name");
 
@@ -71,4 +59,16 @@ export const loader = async ({ request }) => {
       },
     }
   );
+};
+
+// ✅ NEW: handle CORS preflight
+export const options = () => {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
 };
